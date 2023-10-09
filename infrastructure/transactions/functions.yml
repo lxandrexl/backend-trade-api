@@ -1,0 +1,43 @@
+createCardTokenLambda:
+  name: ${self:custom.lambda}001
+  handler: lambdas/transactions/cards/index.createCardTokenHandler
+  environment:
+    CARDS_TABLE:  ${self:custom.CardsTable}
+    STR: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  events:
+    - http:
+        path: /card/token
+        method: post
+        cors:
+          origin: "*"
+          headers:
+            - Content-Type
+            - X-Requested-With
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+          allowCredentials: false
+
+getCardInfoLambda:
+  name: ${self:custom.lambda}002
+  handler: lambdas/transactions/cards/index.getCardInfoHandler
+  environment:
+    CARDS_TABLE:  ${self:custom.CardsTable}
+    SHOPS_TABLE:  ${self:custom.ShopsTable}
+  events:
+    - http:
+        path: /card
+        method: get
+        cors:
+          origin: "*"
+          headers:
+            - Content-Type
+            - X-Requested-With
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+          allowCredentials: false

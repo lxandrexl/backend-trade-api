@@ -1,0 +1,64 @@
+service: backend-trade-api
+frameworkVersion: "3"
+
+package:
+  excludeDevDependencies: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  versionFunctions: false
+  stage: ${opt:stage, 'DESA'}
+  region: ${self:custom.regions.code.${self:custom.stageDeploy}}
+  environment:
+    ACCOUNT: 
+      Ref: AWS::AccountId
+    REGION: ${self:provider.region}
+    MYSQL_HOST: 'localhost'
+    MYSQL_PORT: '3306'
+    MYSQL_USER: 'root'
+    MYSQL_PASSWORD: '1995'
+    MYSQL_DATABASE: 'trade'
+    STAGE: ${self:custom.regions.stage.${self:custom.stageDeploy}}
+
+custom:
+  name: backend-trade-api
+  stageDeploy: ${opt:stage, 'DESA'}
+  regions:
+    code:
+      DESA: us-east-1
+      TEST: us-east-1
+      PROD: us-east-2
+    abrev:
+      DESA: ue1
+      TEST: ue1
+      PROD: ue2
+    stage:
+      DESA: desa
+      TEST: test
+      PROD: prod
+  serverless-offline:
+    httpPort: 4010
+    websocketPort: 4011
+    lambdaPort: 4012
+  # Prefix
+  prefix: ${self:custom.regions.abrev.${self:custom.stageDeploy}}${self:custom.regions.stage.${self:custom.stageDeploy}}
+  # Services
+  lambda: ${self:custom.prefix}lmbfun
+  database: ${self:custom.prefix}dbstd
+  # Database Tables
+  CardsTable: ${self:custom.database}001
+  ShopsTable: ${self:custom.database}002
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+  - serverless-plugin-utils
+  - serverless-offline-dotenv
+
+resources:
+  - ${file(./infrastructure/transactions/resources.yml)}
+
+functions:
+  createCardTokenLambda: ${file(./infrastructure/transactions/functions.yml):createCardTokenLambda}
+  getCardInfoLambda: ${file(./infrastructure/transactions/functions.yml):getCardInfoLambda}
