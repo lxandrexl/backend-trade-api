@@ -1,1 +1,0 @@
-{"version":3,"file":"token.schema.js","sourceRoot":"","sources":["../../../../../../../lambdas/transactions/cards/src/infrastructure/validators/token.schema.ts"],"names":[],"mappings":";;;AAAA,2BAA2B;AAEd,QAAA,WAAW,GAAG,GAAG,CAAC,MAAM,CAAC;IAClC,KAAK,EAAE,GAAG,CAAC,MAAM,EAAE,CAAC,GAAG,CAAC,EAAE,CAAC,CAAC,GAAG,CAAC,EAAE,CAAC,CAAC,QAAQ,EAAE;CACjD,CAAC,CAAC,QAAQ,EAAE,CAAC"}
