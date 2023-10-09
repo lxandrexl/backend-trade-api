@@ -1,9 +1,13 @@
-import { Schema } from "joi";
-import { IUseCase } from "../UseCase";
-import { Middleware } from "../Middleware";
-import { InternalError, UnprocessableEntityError } from "./exception";
-import { Container } from "inversify";
-import * as Qs from "qs";
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable @typescript-eslint/no-extraneous-class */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import { type Schema } from 'joi';
+import { type IUseCase } from '../UseCase';
+import { Middleware } from '../Middleware';
+import { InternalError, UnprocessableEntityError } from './exception';
+import { type Container } from 'inversify';
+import * as Qs from 'qs';
 
 export enum InputProcess {
   BODY,
@@ -17,26 +21,26 @@ export enum InputProcess {
 
 export abstract class ContainerControllerExecutor {
   static executeValidator(input: any, schema: Schema) {
-    if (typeof input === "string") input = JSON.parse(input);
+    if (typeof input === 'string') input = JSON.parse(input);
     const { error } = schema.validate(input);
-    if (error) console.error("ERROR CONTAINERCONTROLLEREXECUTOR::", error);
+    if (error) console.error('ERROR CONTAINERCONTROLLEREXECUTOR::', error);
     if (error) throw new UnprocessableEntityError(error);
   }
 
   static executeInputMethod(input: any, option: InputProcess) {
     switch (option) {
       case InputProcess.BODY:
-        return typeof input.body === "string"
+        return typeof input.body === 'string'
           ? JSON.parse(input.body)
           : input.body;
       case InputProcess.QUERY:
         return Qs.parse(input.queryStringParameters);
       case InputProcess.RAW:
         input.body =
-          typeof input.body === "string" ? JSON.parse(input.body) : input.body;
+          typeof input.body === 'string' ? JSON.parse(input.body) : input.body;
         return input;
       case InputProcess.REQUEST_CTX:
-        return typeof input.requestContext === "string"
+        return typeof input.requestContext === 'string'
           ? JSON.parse(input.requestContext)
           : input.requestContext;
       case InputProcess.RECORDS:
@@ -44,17 +48,19 @@ export abstract class ContainerControllerExecutor {
       case InputProcess.REQUEST:
         return input;
       case InputProcess.SNS:
-        return input.Records[0].hasOwnProperty('Sns') ? input.Records[0].Sns : input.Records[0];
+        return input.Records[0].hasOwnProperty('Sns')
+          ? input.Records[0].Sns
+          : input.Records[0];
     }
   }
 }
 
-export type GuardResponse = {
-  pass: boolean,
-  status: number,
-  data: any
+export interface GuardResponse {
+  pass: boolean;
+  status: number;
+  data: any;
 }
-export type Guard = (event : any) => Promise<GuardResponse>;
+export type Guard = (event: any) => Promise<GuardResponse>;
 
 export class ContainerController {
   private _validator: Schema;
@@ -75,7 +81,7 @@ export class ContainerController {
 
   setMiddleware() {
     this._middleware = true;
-    return this
+    return this;
   }
 
   setValidator(schema: Schema) {
@@ -109,11 +115,8 @@ export class ContainerController {
     return this;
   }
 
-  setGuard(guard : Guard[]){
-    this._guards = [
-      ...this._guards,
-      ...guard
-    ];
+  setGuard(guard: Guard[]) {
+    this._guards = [...this._guards, ...guard];
     return this;
   }
 
@@ -123,13 +126,13 @@ export class ContainerController {
       'X-XSS-Protection': '1; mode=block',
       'X-Frame-Options': 'SAMEORIGIN',
       'Referrer-Policy': 'no-referrer-when-downgrade',
-      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains'
     };
     try {
       const input = event;
-      if(this._middleware) await Middleware.validate(input);
-      let request = {} as any;
-      let inputRequest = ContainerControllerExecutor.executeInputMethod(
+      if (this._middleware) await Middleware.validate(input);
+      const request = {} as any;
+      const inputRequest = ContainerControllerExecutor.executeInputMethod(
         input,
         this._inputMethod
       );
@@ -144,9 +147,9 @@ export class ContainerController {
         );
       }
       // Execute Guards
-      for(const element of this._guards){
-        const {data, pass, status} = await element(event);
-        if(!pass){
+      for (const element of this._guards) {
+        const { data, pass, status } = await element(event);
+        if (!pass) {
           return {
             statusCode: status,
             headers: securityHeaders,
@@ -162,16 +165,16 @@ export class ContainerController {
           statusCode: this._status,
           body: JSON.stringify(result),
           headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Credentials": true,
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': true,
             ...securityHeaders
-          },
+          }
         };
       } else {
         return result;
       }
     } catch (e: any) {
-      const error = typeof e.render === "function" ? e.render() : null;
+      const error = typeof e.render === 'function' ? e.render() : null;
       if (this._interceptor) {
         return this._interceptor(error ?? e);
       } else if (error) {
@@ -179,10 +182,10 @@ export class ContainerController {
           statusCode: error.code,
           body: JSON.stringify(error.body),
           headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Credentials": true,
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': true,
             ...securityHeaders
-          },
+          }
         };
       } else {
         const internalError = new InternalError(e).render();
@@ -190,24 +193,24 @@ export class ContainerController {
           statusCode: internalError.code,
           body: JSON.stringify(internalError.body),
           headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Credentials": true,
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': true,
             ...securityHeaders
-          },
+          }
         };
       }
     }
   }
 }
 
-export type Request<T, P = any, Q = any> = {
+export interface Request<T, P = any, Q = any> {
   params?: P;
   query?: Q;
   headers?: any;
   input: T;
-};
+}
 
-export type Response = {
-  status: string,
-  details: any
+export interface Response {
+  status: string;
+  details: any;
 }

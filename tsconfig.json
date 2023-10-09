@@ -22,7 +22,8 @@
     "outDir": "./dist",
     "paths": {
       "@core/*": ["@core/*"]
-    }
+    },
+    "strictNullChecks": true
   },
   "include": [
     "lambdas/**/src/**/*",

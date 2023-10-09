@@ -1,2 +1,2 @@
-export * from "./card.schema";
-export * from "./token.schema";
+export * from './card.schema';
+export * from './token.schema';
