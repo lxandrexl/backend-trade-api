@@ -7,7 +7,7 @@ import {
   type Request,
   type Response
 } from '../../../../../../@core/controller';
-import { IRedisDAO } from '@core/services';
+import { IRedisDAO } from '../../../../../../@core/services';
 
 interface data {
   token: string;

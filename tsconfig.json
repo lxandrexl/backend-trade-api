@@ -1,19 +1,21 @@
 {
   "ts-node": {
-    // Do not forget to `npm i -D tsconfig-paths`
     "require": ["tsconfig-paths/register"]
 },
-  "compileOnSave": false,
+  "compileOnSave": true,
   "compilerOptions": {
     "rootDir": ".",
-    "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2019",
     "module": "CommonJS",
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2019",
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,

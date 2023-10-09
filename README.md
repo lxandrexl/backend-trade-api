@@ -29,6 +29,12 @@ Ejecutar el validador de formato (eslint, prettier).
 npm run lint
 ```
 
+Ejecutar pruebas unitarias (JEST).
+
+```bash
+npm run test
+```
+
 ## Tarjetas de credito de prueba
 
 |       Tarjeta                 |   Número de tarjeta       |
