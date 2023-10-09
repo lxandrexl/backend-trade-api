@@ -127,7 +127,7 @@ export class ContainerController {
     };
     try {
       const input = event;
-      if(this._middleware) Middleware.validate(input);
+      if(this._middleware) await Middleware.validate(input);
       let request = {} as any;
       let inputRequest = ContainerControllerExecutor.executeInputMethod(
         input,

@@ -3,6 +3,7 @@ createCardTokenLambda:
   handler: lambdas/transactions/cards/index.createCardTokenHandler
   environment:
     CARDS_TABLE:  ${self:custom.CardsTable}
+    SHOPS_TABLE:  ${self:custom.ShopsTable}
     STR: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   events:
     - http:

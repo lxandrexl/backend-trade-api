@@ -19,6 +19,9 @@ provider:
     MYSQL_USER: 'root'
     MYSQL_PASSWORD: '1995'
     MYSQL_DATABASE: 'trade'
+    REDIS_HOST: 'localhost'
+    REDIS_PORT: 6379
+    REDIS_TTL: 60
     STAGE: ${self:custom.regions.stage.${self:custom.stageDeploy}}
 
 custom:
